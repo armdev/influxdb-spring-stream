@@ -13,7 +13,23 @@ services:
       volumes:  
         - ../influxdb/data:/var/lib/influxdb
       networks:
-          - iotapi   
+          - iotapi
+          
+    sensor:
+      image: sensor
+      build: ./sensor
+      container_name: sensor
+      deploy:
+          replicas: 1
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 3
+            window: 120s       
+      ports:
+          - '2075:2075'  
+      networks:
+          - iotapi  
 
     iot:
       image: iot
