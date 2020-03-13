@@ -1,2 +1,8 @@
 server:
    port: 2075
+   
+spring:
+  rsocket:
+    server:
+     transport: TCP
+     port: 2050
