@@ -2,6 +2,7 @@ version: '3.3'
 services:
     telegraf:
         image: 'telegraf:1.5.3'
+        container_name: telegraf
         volumes:
             - './telegraf.conf:/etc/telegraf/telegraf.conf:ro'
         links:
@@ -12,6 +13,7 @@ services:
             - iotapi
     chronograf:
         image: 'chronograf:1.4.3.1'
+        container_name: chronograf
         environment:
             INFLUXDB_URL: 'http://influxdb:8086'
             KAPACITOR_URL: 'http://kapacitor:9092'
@@ -24,6 +26,7 @@ services:
             - iotapi
     kapacitor:
         image: 'kapacitor:1.4.1'
+        container_name: kapacitor
         environment:
             KAPACITOR_HOSTNAME: kapacitor
             KAPACITOR_INFLUXDB_0_URLS_0: 'http://influxdb:8086'
@@ -74,6 +77,7 @@ services:
         links:
             - influxdb
             - telegraf
+            - sensor
         ports:
             - '2076:2076'
         networks:
