@@ -1,6 +1,12 @@
 server:
    port: 2076
 
+spring:
+  rsocket:
+    server:
+     transport: TCP
+     mapping-path: /rsocket
+
 db:
   url: influxdb
   name: iotdb

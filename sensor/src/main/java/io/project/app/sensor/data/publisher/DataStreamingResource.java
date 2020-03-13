@@ -30,12 +30,14 @@ public class DataStreamingResource {
 
     @MessageMapping("send.data")
     public Flux<SensorMetricsDTO> dataGenerator() {
-        return Flux.fromIterable(this.getDataList())
+        List<SensorMetricsDTO> sendList = this.getDataList();
+        this.getDataList().clear();
+        return Flux.fromIterable(sendList)
                 .delayElements(Duration.ofMillis(100));
 
     }
 
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(fixedDelay = 3000)
     public void dataPublisher() {
         log.info("Starting new stream data pushing");
         SensorMetricsDTO sensorMetricsDTO = null;
@@ -46,7 +48,7 @@ public class DataStreamingResource {
             sensorMetricsDTO.setPhotosensor(this.getNextDouble());
             sensorMetricsDTO.setRadiationLevel(this.getNextDouble());
             sensorMetricsDTO.setTimestamp(this.getNextTimestamp());
-            sensorMetricsDTO.setSensorId(sensor);
+            sensorMetricsDTO.setSensorId(sensor);           
             dataList.add(sensorMetricsDTO);
         }
 

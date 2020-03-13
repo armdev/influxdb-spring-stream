@@ -1,4 +1,4 @@
-package io.project.app.iot;
+package io.project.app.sensor.app;
 
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
