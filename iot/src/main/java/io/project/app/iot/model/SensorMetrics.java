@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceMetrics implements Serializable {   
+public class SensorMetrics implements Serializable {   
     
     @Column(name = "time")
     private Instant time;

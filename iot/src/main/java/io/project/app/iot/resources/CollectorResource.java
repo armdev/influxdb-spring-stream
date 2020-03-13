@@ -5,8 +5,9 @@
  */
 package io.project.app.iot.resources;
 
-import io.project.app.iot.model.DeviceMetrics;
+import io.project.app.iot.model.SensorMetrics;
 import io.project.app.iot.services.CollectorService;
+import io.project.app.models.SensorMetricsDTO;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
@@ -41,7 +42,7 @@ public class CollectorResource {
         @ApiResponse(code = 400, message = "Could not done operation")
     }
     )
-    public ResponseEntity<?> push(@RequestBody DeviceMetrics deviceMetrics) {
+    public ResponseEntity<?> push(@RequestBody SensorMetricsDTO deviceMetrics) {
         collectorService.saveStream(deviceMetrics);
         return ResponseEntity.status(HttpStatus.OK).body("Stream pushed");
     }
@@ -55,7 +56,7 @@ public class CollectorResource {
     }
     )
     public ResponseEntity<?> fetch() {
-        final List<DeviceMetrics> allMetrics = collectorService.getAllMetrics();
+        final List<SensorMetrics> allMetrics = collectorService.getAllMetrics();
         return ResponseEntity.status(HttpStatus.OK).body(allMetrics);
     }
 
@@ -68,7 +69,7 @@ public class CollectorResource {
     }
     )
     public ResponseEntity<?> get(@RequestParam String sensorId) {
-        final List<DeviceMetrics> allMetrics = collectorService.getAllMetricsForSensor(sensorId);
+        final List<SensorMetrics> allMetrics = collectorService.getAllMetricsForSensor(sensorId);
         return ResponseEntity.status(HttpStatus.OK).body(allMetrics);
     }
 

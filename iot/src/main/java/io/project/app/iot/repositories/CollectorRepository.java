@@ -1,6 +1,7 @@
 package io.project.app.iot.repositories;
 
-import io.project.app.iot.model.DeviceMetrics;
+import io.project.app.iot.model.SensorMetrics;
+import io.project.app.models.SensorMetricsDTO;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -77,7 +78,7 @@ public class CollectorRepository {
         }
     }
 
-    public void measureJVMLoad(final DeviceMetrics deviceMetrics) {
+    public void saveStreamData(final SensorMetricsDTO deviceMetrics) {
         if (!metricsEnabled) {
             return;
         }
@@ -112,24 +113,28 @@ public class CollectorRepository {
         influxDB.write(batchPoints);
     }
 
-    public List<DeviceMetrics> getLastLoadMetrics(final String sensorId, int count) {
+    public List<SensorMetrics> getLastLoadMetrics(final String sensorId, int count) {
         String query = "SELECT * FROM sensors where sensorId='%s' ORDER BY time DESC LIMIT " + count;
         query = String.format(query, sensorId);
         QueryResult queryResult = influxDB.query(new Query(query, dbName));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-        List<DeviceMetrics> workloadPoints = resultMapper.toPOJO(queryResult, DeviceMetrics.class);
+        List<SensorMetrics> workloadPoints = resultMapper.toPOJO(queryResult, SensorMetrics.class);
         Collections.reverse(workloadPoints);
         return workloadPoints;
     }
 
-    public List<DeviceMetrics> getAllMetrics() {
-        String query = "SELECT * FROM sensors where sensorId != null";
+    public List<SensorMetrics> getAllMetrics() {
+        String query = "SELECT * FROM sensors WHERE timestamp > 0 ORDER BY time DESC LIMIT 10";
         query = String.format(query);
-        QueryResult queryResult = influxDB.query(new Query(query, dbName));
+       
+        QueryResult queryResult = influxDB.query(new Query(query, dbName));        
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
-        List<DeviceMetrics> workloadPoints = resultMapper.toPOJO(queryResult, DeviceMetrics.class);
+        List<SensorMetrics> workloadPoints = resultMapper.toPOJO(queryResult, SensorMetrics.class);
         Collections.reverse(workloadPoints);
         return workloadPoints;
     }
+    
+    
+    //https://github.com/influxdata/influxdb-java
 
 }

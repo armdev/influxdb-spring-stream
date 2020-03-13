@@ -5,8 +5,9 @@
  */
 package io.project.app.iot.services;
 
-import io.project.app.iot.model.DeviceMetrics;
+import io.project.app.iot.model.SensorMetrics;
 import io.project.app.iot.repositories.CollectorRepository;
+import io.project.app.models.SensorMetricsDTO;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +24,17 @@ public class CollectorService {
     @Autowired
     private CollectorRepository collectorRepository;
 
-    public void saveStream(final DeviceMetrics deviceMetrics) {
+    public void saveStream(final SensorMetricsDTO deviceMetrics) {
         log.info("Save new stream with device id " + deviceMetrics.getSensorId());
-        collectorRepository.measureJVMLoad(deviceMetrics);
-
+        collectorRepository.saveStreamData(deviceMetrics);
     }
 
-    public List<DeviceMetrics> getAllMetrics() {
+    public List<SensorMetrics> getAllMetrics() {
         log.info("get All metrics ");
         return collectorRepository.getAllMetrics();
-
     }
-    
-      public List<DeviceMetrics> getAllMetricsForSensor(String sensorId) {
+
+    public List<SensorMetrics> getAllMetricsForSensor(String sensorId) {
         log.info("Get All metrics with sensor id ");
         return collectorRepository.getLastLoadMetrics(sensorId, 10);
 
