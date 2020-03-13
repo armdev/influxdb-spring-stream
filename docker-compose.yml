@@ -1,56 +1,83 @@
-version: "3.3"
-
+version: '3.3'
 services:
+    telegraf:
+        image: 'telegraf:1.5.3'
+        volumes:
+            - './telegraf.conf:/etc/telegraf/telegraf.conf:ro'
+        links:
+            - influxdb
+        ports:
+            - '8125:8125/udp'
+        networks:
+            - iotapi
+    chronograf:
+        image: 'chronograf:1.4.3.1'
+        environment:
+            INFLUXDB_URL: 'http://influxdb:8086'
+            KAPACITOR_URL: 'http://kapacitor:9092'
+        ports:
+            - '8888:8888'
+        links:
+            - influxdb
+            - kapacitor
+        networks:
+            - iotapi
+    kapacitor:
+        image: 'kapacitor:1.4.1'
+        environment:
+            KAPACITOR_HOSTNAME: kapacitor
+            KAPACITOR_INFLUXDB_0_URLS_0: 'http://influxdb:8086'
+        links:
+            - influxdb
+        ports:
+            - '9092:9092'
+        networks:
+            - iotapi
     influxdb:
-      image: influxdb:latest
-      container_name: influxdb
-      ports:
-        - "8083:8083"
-        - "8086:8086"
-        - "8090:8090"
-      env_file:
-        - 'env.influxdb'
-      volumes:  
-        - ../influxdb/data:/var/lib/influxdb
-      networks:
-          - iotapi
-          
+        image: 'influxdb:latest'
+        container_name: influxdb
+        ports:
+            - '8083:8083'
+            - '8086:8086'
+            - '8090:8090'
+        env_file:
+            - env.influxdb
+        volumes:
+            - '../influxdb/data:/var/lib/influxdb'
+        networks:
+            - iotapi
     sensor:
-      image: sensor
-      build: ./sensor
-      container_name: sensor
-      deploy:
-          replicas: 1
-          restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 3
-            window: 120s       
-      ports:
-          - '2075:2075'  
-      networks:
-          - iotapi  
-
+        image: sensor
+        environment:
+            INFLUXDB_URL: 'http://influxdb:8086'
+        build: ./sensor
+        container_name: sensor
+        deploy:
+            replicas: 1
+            restart_policy: {condition: on-failure, delay: 5s, max_attempts: 3, window: 120s}
+        ports:
+            - '2075:2075'
+        networks:
+            - iotapi
     iot:
-      image: iot
-      build: ./iot
-      container_name: iot
-      deploy:
-          replicas: 1
-          restart_policy:
-            condition: on-failure
-            delay: 5s
-            max_attempts: 3
-            window: 120s
-      links:
-          - influxdb       
-      depends_on:      
-          - influxdb       
-      ports:
-          - '2076:2076'  
-      networks:
-          - iotapi  
-
+        image: iot
+        environment:
+            INFLUXDB_URL: 'http://influxdb:8086'
+        build: ./iot
+        container_name: iot
+        deploy:
+            replicas: 1
+            restart_policy: {condition: on-failure, delay: 5s, max_attempts: 3, window: 120s}
+        depends_on:
+            - influxdb
+            - telegraf
+        links:
+            - influxdb
+            - telegraf
+        ports:
+            - '2076:2076'
+        networks:
+            - iotapi
 networks:
- iotapi:
-  driver: bridge
+    iotapi:
+        driver: bridge
