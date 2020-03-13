@@ -2,11 +2,13 @@ package io.project.app.sensor.data.publisher;
 
 import io.project.app.models.SensorMetricsDTO;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
@@ -22,33 +24,36 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DataStreamingResource {
 
-    private String[] sensorsArray = new String[]{"sensor1", "sensor2", "sensor3", "sensor4"};
+    private String[] sensorsArray = new String[]{"sensor1", "sensor2", "sensor3", "sensor4", "sensor5"};
 
     private List<String> sensors = Arrays.asList(sensorsArray);
 
-    private List<SensorMetricsDTO> dataList = new ArrayList<>();
+    private Set<SensorMetricsDTO> dataList = new HashSet<>();
 
     @MessageMapping("send.data")
     public Flux<SensorMetricsDTO> dataGenerator() {
-        List<SensorMetricsDTO> sendList = this.getDataList();
-        this.getDataList().clear();
+        Set<SensorMetricsDTO> sendList = this.getDataList();
+        log.info("List size " + sendList.size());
         return Flux.fromIterable(sendList)
                 .delayElements(Duration.ofMillis(100));
 
     }
 
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 300)
+    //@Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
     public void dataPublisher() {
-        log.info("Starting new stream data pushing");
-        SensorMetricsDTO sensorMetricsDTO = null;
-        for (String sensor : sensors) {
+        dataList = new HashSet<>();
+        SensorMetricsDTO sensorMetricsDTO = new SensorMetricsDTO();
+        for (Iterator<String> it = sensors.iterator(); it.hasNext();) {
+            String sensor = it.next();
             sensorMetricsDTO = new SensorMetricsDTO();
             sensorMetricsDTO.setAmbientTemperature(this.getNextDouble());
             sensorMetricsDTO.setHumidity(this.getNextDouble());
             sensorMetricsDTO.setPhotosensor(this.getNextDouble());
             sensorMetricsDTO.setRadiationLevel(this.getNextDouble());
             sensorMetricsDTO.setTimestamp(this.getNextTimestamp());
-            sensorMetricsDTO.setSensorId(sensor);           
+            sensorMetricsDTO.setSensorId(sensor);
+            log.info("Starting new stream for sensor " + sensor);
             dataList.add(sensorMetricsDTO);
         }
 

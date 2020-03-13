@@ -27,18 +27,24 @@ public class ConsumerService {
                 .connectTcp("sensor", 2050).retry(5).cache();
     }
 
-    @Scheduled(fixedDelay = 3000)
+    @Scheduled(fixedDelay = 300)
+    //@Scheduled(initialDelay = 1000 * 30, fixedDelay=Long.MAX_VALUE)
     public Flux<SensorMetricsDTO> get() {
         Flux<SensorMetricsDTO> take = this.requesterMono
                 .flatMapMany(req
                         -> req.route("send.data")
                         .retrieveFlux(SensorMetricsDTO.class))
+                .onBackpressureBuffer()
+                .onErrorContinue((throwable, o) -> log.warn("value ignored {}", o))
                 .take(10);
+
         List<SensorMetricsDTO> blockFirst = take.buffer().blockFirst();
-        for (SensorMetricsDTO sm : blockFirst) {
-            log.info("Data from sensor " + sm.getSensorId());
+        blockFirst.parallelStream().map((sm) -> {
+            log.info("Received data from sensor " + sm.getSensorId());
+            return sm;
+        }).forEachOrdered((sm) -> {
             collectorService.saveStream(sm);
-        }
+        });
 
         return take;
 

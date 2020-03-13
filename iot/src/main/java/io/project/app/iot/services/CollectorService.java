@@ -25,7 +25,7 @@ public class CollectorService {
     private CollectorRepository collectorRepository;
 
     public void saveStream(final SensorMetricsDTO deviceMetrics) {
-        log.info("Save new stream with device id " + deviceMetrics.getSensorId());
+        //log.info("Save new stream with device id " + deviceMetrics.getSensorId());
         collectorRepository.saveStreamData(deviceMetrics);
     }
 
