@@ -1,0 +1,40 @@
+version: "3.3"
+
+services:
+    influxdb:
+      image: influxdb:latest
+      container_name: influxdb
+      ports:
+        - "8083:8083"
+        - "8086:8086"
+        - "8090:8090"
+      env_file:
+        - 'env.influxdb'
+      volumes:  
+        - ../influxdb/data:/var/lib/influxdb
+      networks:
+          - iotapi   
+
+    iot:
+      image: iot
+      build: ./iot
+      container_name: iot
+      deploy:
+          replicas: 1
+          restart_policy:
+            condition: on-failure
+            delay: 5s
+            max_attempts: 3
+            window: 120s
+      links:
+          - influxdb       
+      depends_on:      
+          - influxdb       
+      ports:
+          - '2076:2076'  
+      networks:
+          - iotapi  
+
+networks:
+ iotapi:
+  driver: bridge

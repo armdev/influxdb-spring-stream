@@ -1,0 +1,11 @@
+server:
+   port: 2076
+
+db:
+  url: influxdb
+  name: iotdb
+  port: 8086
+  username: root
+  password: root
+  store_metrics: 3d
+  metricsEnabled: true
