@@ -147,4 +147,5 @@ public class CollectorRepository {
     //https://github.com/influxdata/influxdb-java
     // https://github.com/influxdata/influxdb-java/blob/master/src/test/java/org/influxdb/querybuilder/BuiltQueryTest.java
     //https://influxdbcom.readthedocs.io/en/latest/content/docs/v0.6/api/aggregate_functions/
+    //https://github.com/influxdata/influxdb-java/blob/master/src/test/java/org/influxdb/InfluxDBTest.java
 }
