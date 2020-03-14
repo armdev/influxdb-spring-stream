@@ -46,6 +46,8 @@ server:
    port: 2076
 
 spring:
+  application:
+    name: iot 
   rsocket:
     server:
      transport: TCP

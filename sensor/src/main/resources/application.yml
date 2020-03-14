@@ -1,7 +1,53 @@
+management:
+  metrics:
+    distribution:
+      percentiles-histogram:
+         http:
+           server:
+             requests: true
+      sla:
+        http:
+         server:
+            requests: 1ms,5ms          
+    enable:
+      jvm: true
+    web:
+     server:
+       auto-time-requests: true
+    export:
+      statsd:
+        enabled: true
+        flavor: telegraf
+        host: telegraf
+        port: 8125
+      influx:
+         uri: http://influxdb:8086
+         db: iotdb
+         step: 10s
+  security:
+    enabled: false
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+  endpoints:
+    jmx:
+      exposure:
+        include: '*'
+    web:     
+      exposure:
+        include: '*'
+        base-path: /actuator
+    cors:
+      allowed-origins: 'true'
+      enabled-by-default: 'false'
+      
 server:
    port: 2075
    
 spring:
+  application:
+    name: sensor 
   rsocket:
     server:
      transport: TCP
