@@ -85,7 +85,7 @@ public class CollectorRepository {
 
         deviceMetrics.setTimestamp(new Date(System.currentTimeMillis()).getTime());
         BatchPoints batchPoints = getBatchPoints();
-        Point point = Point.measurement("sensors")               
+        Point point = Point.measurement("sensors")
                 .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .addField("sensorId", deviceMetrics.getSensorId())
                 .addField("timestamp", deviceMetrics.getTimestamp())
@@ -125,15 +125,26 @@ public class CollectorRepository {
     public List<SensorMetrics> getAllMetrics() {
         String query = "SELECT * FROM sensors WHERE timestamp > 0 ORDER BY time DESC LIMIT 10";
         query = String.format(query);
-       
-        QueryResult queryResult = influxDB.query(new Query(query, dbName));        
+
+        QueryResult queryResult = influxDB.query(new Query(query, dbName));
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         List<SensorMetrics> workloadPoints = resultMapper.toPOJO(queryResult, SensorMetrics.class);
         Collections.reverse(workloadPoints);
         return workloadPoints;
     }
-    
-    
-    //https://github.com/influxdata/influxdb-java
 
+    public List<SensorMetrics> getMaxRadiationForSensor(final String sensorId) {
+        String query = "SELECT MAX(radiationLevel) FROM sensors where sensorId='%s' GROUP BY time(3600m) ";
+        query = String.format(query, sensorId);
+        QueryResult queryResult = influxDB.query(new Query(query, dbName));
+        log.info("queryResult "  + queryResult.toString());
+        InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
+        List<SensorMetrics> workloadPoints = resultMapper.toPOJO(queryResult, SensorMetrics.class);
+        Collections.reverse(workloadPoints);
+        return workloadPoints;
+    }
+
+    //https://github.com/influxdata/influxdb-java
+    // https://github.com/influxdata/influxdb-java/blob/master/src/test/java/org/influxdb/querybuilder/BuiltQueryTest.java
+    //https://influxdbcom.readthedocs.io/en/latest/content/docs/v0.6/api/aggregate_functions/
 }

@@ -72,5 +72,20 @@ public class CollectorResource {
         final List<SensorMetrics> allMetrics = collectorService.getAllMetricsForSensor(sensorId);
         return ResponseEntity.status(HttpStatus.OK).body(allMetrics);
     }
+    
+    
+    
+    @GetMapping(path = "/fetch/metrics/id/radiation", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Operation Success"),
+        @ApiResponse(code = 201, message = "Operation done"),
+        @ApiResponse(code = 400, message = "Could not done operation")
+    }
+    )
+    public ResponseEntity<?> radiationLevel(@RequestParam String sensorId) {
+        final List<SensorMetrics> allMetrics = collectorService.getMaxRadiationForSensor(sensorId);
+        return ResponseEntity.status(HttpStatus.OK).body(allMetrics);
+    }
 
 }

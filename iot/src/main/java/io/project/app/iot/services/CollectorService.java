@@ -39,4 +39,10 @@ public class CollectorService {
         return collectorRepository.getLastLoadMetrics(sensorId, 10);
 
     }
+    
+       public List<SensorMetrics> getMaxRadiationForSensor(String sensorId) {
+        log.info("Get getMaxRadiationForSensor ");
+        return collectorRepository.getMaxRadiationForSensor(sensorId);
+
+    }
 }
