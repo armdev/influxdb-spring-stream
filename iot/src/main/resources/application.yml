@@ -54,6 +54,7 @@ spring:
      mapping-path: /rsocket
 
 db:
+  #url: 192.168.6.31
   url: influxdb
   name: iotdb
   port: 8086
