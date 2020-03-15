@@ -90,7 +90,7 @@ public class CollectorRepository {
         deviceMetrics.setTimestamp(new Date(System.currentTimeMillis()).getTime());
         BatchPoints batchPoints = getBatchPoints();
         Point point = Point.measurement("sensors")
-                .tag("sensorId", deviceMetrics.getSensorId())
+                .tag("SENSOR", deviceMetrics.getSensorId())
                 .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                 .addField("sensorId", deviceMetrics.getSensorId())
                 .addField("timestamp", deviceMetrics.getTimestamp())

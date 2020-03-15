@@ -13,14 +13,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SensorMetrics implements Serializable {   
-    
+public class SensorMetrics implements Serializable {
+
     @Column(name = "time")
     private Instant time;
-     
+
+    @Column(name = "tag")
+    private String tag;
+
     @Column(name = "sensorId")
     private String sensorId;
-    
+
     @Column(name = "timestamp")
     private long timestamp;
 
@@ -37,6 +40,3 @@ public class SensorMetrics implements Serializable {
     public double radiationLevel;
 
 }
-
-
-

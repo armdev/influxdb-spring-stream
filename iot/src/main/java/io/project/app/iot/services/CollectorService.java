@@ -36,7 +36,7 @@ public class CollectorService {
 
     public List<SensorMetrics> getAllMetricsForSensor(String sensorId) {
         log.info("Get All metrics with sensor id ");
-        return collectorRepository.getLastLoadMetrics(sensorId, 10);
+        return collectorRepository.getLastLoadMetrics(sensorId, 100);
 
     }
     
