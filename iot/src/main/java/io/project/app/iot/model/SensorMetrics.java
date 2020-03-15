@@ -18,7 +18,7 @@ public class SensorMetrics implements Serializable {
     @Column(name = "time")
     private Instant time;
 
-    @Column(name = "tag")
+    @Column(name = "atag")
     private String tag;
 
     @Column(name = "sensorId")
