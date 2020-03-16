@@ -90,7 +90,13 @@ public class CollectorRepository {
         String query = "SELECT MAX(radiationLevel) FROM sensors where sensorId='%s' GROUP BY time(3600m) ";
         query = String.format(query, sensorId);
         QueryResult queryResult = dBConnect.getInfluxDB().query(new Query(query, dBConnect.getDbName()));
-        log.info("queryResult " + queryResult.toString());
+        
+        log.info("QueryResult " + queryResult.toString());
+        
+        QueryResult.Series get = queryResult.getResults().get(0).getSeries().get(0);
+        
+        
+        
         InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
         List<SensorMetrics> workloadPoints = resultMapper.toPOJO(queryResult, SensorMetrics.class);
         Collections.reverse(workloadPoints);
