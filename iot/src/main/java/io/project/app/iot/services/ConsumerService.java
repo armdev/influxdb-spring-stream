@@ -40,7 +40,7 @@ public class ConsumerService {
 
         List<SensorMetricsDTO> blockFirst = take.buffer().blockFirst();
         blockFirst.parallelStream().map((sm) -> {
-         //   log.info("Received data from sensor " + sm.getSensorId());
+           log.info("Received data from sensor " + sm.getSensorId());
             return sm;
         }).forEachOrdered((sm) -> {
             collectorService.saveStream(sm);
