@@ -6,4 +6,4 @@ Sensor microservice generate random data for sensors, IOT mciroservice connect t
 You can get sensors data from http://localhost:2076/swagger-ui.html
 
 Chronograf  URL is
-http://localhost:8888/s
+http://localhost:8888
